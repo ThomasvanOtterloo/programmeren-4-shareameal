@@ -5,8 +5,8 @@ const port = process.env.PORT || 3000;
 const bodyParser = require("body-parser");
 app.use(bodyParser.json());
 
-let database = [];
-let id = 0;
+let userList = [];
+let id=0;
 
 app.all("*", (req, res, next) => {
   const method = req.method;
@@ -21,44 +21,146 @@ app.get("/", (req, res) => {
   });
 });
 
-app.post("/api/movie", (req, res) => {
-  let movie = req.body;
-  id++;
-  movie = {
-    id,
-    ...movie,
-  };
-  console.log(movie);
-  database.push(movie);
-  res.status(201).json({
-    status: 201,
-    result: database,
+// app.post("/api/movie", (req, res) => {
+//   let movie = req.body;
+//   id++;
+//   movie = {
+//     id,
+//     ...movie,
+//   };
+//   console.log(movie);
+//   database.push(movie);
+//   res.status(201).json({
+//     status: 201,
+//     result: database,
+//   });
+// });
+
+// app.get("/api/movie/:movieId", (req, res, next) => {
+//   const movieId = req.params.movieId;
+//   console.log(`Movie met ID ${movieId} gezocht`);
+//   let movie = database.filter((item) => item.id == movieId);
+//   if (movie.length > 0) {
+//     console.log(movie);
+//     res.status(200).json({
+//       status: 200,
+//       result: movie,
+//     });
+//   } else {
+//     res.status(401).json({
+//       status: 401,
+//       result: `Movie with ID ${movieId} not found`,
+//     });
+//   }
+// });
+
+// app.get("/api/movie", (req, res, next) => {
+//   res.status(200).json({
+//     status: 200,
+//     result: database,
+//   });
+// });
+
+
+// Gets ALL User objects in the list.
+app.get("/api/user",(req,res)=> {
+res.status(200).json({
+  status:200,
+  result: userList
   });
+  console.log("Get request /user is successfull");
 });
 
-app.get("/api/movie/:movieId", (req, res, next) => {
-  const movieId = req.params.movieId;
-  console.log(`Movie met ID ${movieId} gezocht`);
-  let movie = database.filter((item) => item.id == movieId);
-  if (movie.length > 0) {
-    console.log(movie);
-    res.status(200).json({
-      status: 200,
-      result: movie,
+// Creates a object in USER
+app.post("/api/user", (req,res)=> {
+  let user = req.body;
+  if (userList.find(c => c.emailAddress === req.body.emailAddress)) {
+    res.status(400).json({
+      status: 400,
+      result: "A user with this email address already exists!"
     });
   } else {
-    res.status(401).json({
-      status: 401,
-      result: `Movie with ID ${movieId} not found`,
+    id++;
+    user = {
+      id,
+      ...user,
+    };
+    userList.push(user);
+    res.status(201).json({
+      status: 201,
+      result: userList,
     });
+    console.log("Succesfully POST json sent.")
   }
 });
 
-app.get("/api/movie", (req, res, next) => {
+// Requests 1 user with a specifik ID.
+app.get("/api/user/:id",(req,res)=> {
+let user = req.params.id;
+console.log(user)
+if(userList.find(c => c.id === parseInt(req.params.id))) {
   res.status(200).json({
     status: 200,
-    result: database,
-  });
+    result: userList.find(c => c.id === parseInt(req.params.id))
+    });
+    console.log(user + " has been pulled")
+} else {
+  res.status(400).json({
+    status: 400,
+    result: `User with ID ${user} not found`,
+  })
+}
+});
+
+
+
+app.put("/api/user/:id", (req,res) => {
+if(userList.find(c => c.id === parseInt(req.params.id))) {
+  console.log(req.params.id)
+  let oldEmail = userList.find(c => c.id === parseInt(req.params.id)).emailAddress
+  userList.find(c => c.id === parseInt(req.params.id)).firstName = req.body.firstName
+  userList.find(c => c.id === parseInt(req.params.id)).lastName = req.body.lastName
+  userList.find(c => c.id === parseInt(req.params.id)).street = req.body.street
+  userList.find(c => c.id === parseInt(req.params.id)).city = req.body.city
+  userList.find(c => c.id === parseInt(req.params.id)).password = req.body.password
+  userList.find(c => c.id === parseInt(req.params.id)).emailAddress = req.body.emailAddress
+
+ 
+  if(userList.find(c => c.emailAddress === oldEmail)) {
+    res.status(400).json({
+      status: 401,
+      result: "You updated your mail to a mail that allready exists!"
+    });
+  } else {
+    res.status(200).json({
+      status: 200,
+      result: userList.find(c => c.id === parseInt(req.params.id))
+      });
+  }
+} else {
+  res.status(400).json({
+    status: 400,
+    result: `User with this ID not found`,
+  })
+}
+});
+
+
+app.delete('/api/user/:id',(req,res) => {
+let user = req.params.id - 1;
+if(userList[user]) {
+  userList.splice(user,1);
+  res.status(200).json({
+    status:200,
+    result: 'Succesfully deleted.'
+  })
+} else {
+  res.status(400).json({
+    status: 400,
+    result: `User with ID ${user+1} not found`,
+  })
+}
+
 });
 
 app.all("*", (req, res) => {
