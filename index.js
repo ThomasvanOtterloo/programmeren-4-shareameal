@@ -21,46 +21,6 @@ app.get("/", (req, res) => {
   });
 });
 
-// app.post("/api/movie", (req, res) => {
-//   let movie = req.body;
-//   id++;
-//   movie = {
-//     id,
-//     ...movie,
-//   };
-//   console.log(movie);
-//   database.push(movie);
-//   res.status(201).json({
-//     status: 201,
-//     result: database,
-//   });
-// });
-
-// app.get("/api/movie/:movieId", (req, res, next) => {
-//   const movieId = req.params.movieId;
-//   console.log(`Movie met ID ${movieId} gezocht`);
-//   let movie = database.filter((item) => item.id == movieId);
-//   if (movie.length > 0) {
-//     console.log(movie);
-//     res.status(200).json({
-//       status: 200,
-//       result: movie,
-//     });
-//   } else {
-//     res.status(401).json({
-//       status: 401,
-//       result: `Movie with ID ${movieId} not found`,
-//     });
-//   }
-// });
-
-// app.get("/api/movie", (req, res, next) => {
-//   res.status(200).json({
-//     status: 200,
-//     result: database,
-//   });
-// });
-
 
 // Gets ALL User objects in the list.
 app.get("/api/user",(req,res)=> {
@@ -113,7 +73,7 @@ if(userList.find(c => c.id === parseInt(req.params.id))) {
 });
 
 
-
+// Updates a user.
 app.put("/api/user/:id", (req,res) => {
 if(userList.find(c => c.id === parseInt(req.params.id))) {
   console.log(req.params.id)
@@ -146,6 +106,7 @@ if(userList.find(c => c.id === parseInt(req.params.id))) {
 });
 
 
+// deleted a user by id
 app.delete('/api/user/:id',(req,res) => {
 let user = req.params.id - 1;
 if(userList[user]) {
@@ -162,6 +123,7 @@ if(userList[user]) {
 }
 
 });
+
 
 app.all("*", (req, res) => {
   res.status(401).json({
