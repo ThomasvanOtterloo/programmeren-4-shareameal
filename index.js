@@ -8,6 +8,9 @@ app.use(bodyParser.json());
 let userList = [];
 let id=0;
 
+// Link Heroku:
+// https://progragrameren-nodejs-server.herokuapp.com/
+
 app.all("*", (req, res, next) => {
   const method = req.method;
   console.log(`Method ${method} is aangeroepen`);
