@@ -1,0 +1,70 @@
+POST /api/user HTTP/1.1
+Host: localhost:3000
+Content-Type: application/json
+
+{
+  "firstName": "thomas@gmail.com",
+  "lastName": "van Otterloo",
+  "street": "Lijndonk",
+  "city": "yescft",
+  "password": "123",
+  "emailAddress": "vanotterloo.thoasdmas@gmail.com"
+}
+
+###
+
+POST /api/user HTTP/1.1
+Host: localhost:3000
+Content-Type: application/json
+
+{
+  "firstName": "thomas@gmail.com",
+  "lastName": "van Otterloo",
+  "street": "Lijndonk",
+  "city": "yescft",
+  "password": "123",
+  "emailAddress": "vanotterloo.thoasdmas@gmail.com1"
+}
+
+###
+
+POST /api/user HTTP/1.1
+Host: localhost:3000
+Content-Type: application/json
+
+{
+  "firstName": "thomas@gmail.com",
+  "lastName": "van Otterloo",
+  "street": "Lijndonk",
+  "city": "yescft",
+  "password": "123",
+  "emailAddress": "vanotterloo.thoasdmas@gmail.com2"
+}
+
+###
+
+POST /api/user HTTP/1.1
+Host: localhost:3000
+Content-Type: application/json
+
+{
+  "firstName": "thomas@gmail.com",
+  "lastName": "van Otterloo",
+  "street": "Lijndonk",
+  "city": "yescft",
+  "password": "123",
+  "emailAddress": "vanotterloo.thoasdmas@gmail.com3"
+}
+
+###
+
+DELETE /api/user/1 HTTP/1.1
+Host: localhost:3000
+Content-Type: application/json
+
+
+###
+
+GET /api/user HTTP/1.1
+Host: localhost:3000
+Content-Type: application/json

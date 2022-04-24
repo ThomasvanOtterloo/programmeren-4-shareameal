@@ -77,25 +77,17 @@ if(userList.find(c => c.id === parseInt(req.params.id))) {
 app.put("/api/user/:id", (req,res) => {
 if(userList.find(c => c.id === parseInt(req.params.id))) {
   console.log(req.params.id)
-  let oldEmail = userList.find(c => c.id === parseInt(req.params.id)).emailAddress
-  userList.find(c => c.id === parseInt(req.params.id)).firstName = req.body.firstName
-  userList.find(c => c.id === parseInt(req.params.id)).lastName = req.body.lastName
-  userList.find(c => c.id === parseInt(req.params.id)).street = req.body.street
-  userList.find(c => c.id === parseInt(req.params.id)).city = req.body.city
-  userList.find(c => c.id === parseInt(req.params.id)).password = req.body.password
-  userList.find(c => c.id === parseInt(req.params.id)).emailAddress = req.body.emailAddress
-
- 
-  if(userList.find(c => c.emailAddress === oldEmail)) {
-    res.status(400).json({
-      status: 401,
-      result: "You updated your mail to a mail that allready exists!"
-    });
+  let user = userList.find(c => c.id === parseInt(req.params.id));
+  if (user.emailAddress !== req.body.emailAddress && userList.find(c => c.emailAddress === req.body.emailAddress)) {
+    res.status(400).json({status: 401, result: "You updated your mail to a mail that allready exists!"})
   } else {
-    res.status(200).json({
-      status: 200,
-      result: userList.find(c => c.id === parseInt(req.params.id))
-      });
+    user.firstName = req.body.firstName
+    user.lastName = req.body.lastName
+    user.street = req.body.street
+    user.city = req.body.city
+    user.password = req.body.password
+    user.emailAddress = req.body.emailAddress
+    res.status(200).json({status: 200, result: user});
   }
 } else {
   res.status(400).json({
@@ -108,20 +100,20 @@ if(userList.find(c => c.id === parseInt(req.params.id))) {
 
 // deleted a user by id
 app.delete('/api/user/:id',(req,res) => {
-let user = req.params.id - 1;
-if(userList[user]) {
-  userList.splice(user,1);
+  console.log(req.params)
+  let user = userList.find(c => c.id === parseInt(req.params.id));
+  if(user) {
+  userList.splice(userList.indexOf(user),1);
   res.status(200).json({
     status:200,
-    result: 'Succesfully deleted.'
+    result: 'Successfully deleted.'
   })
 } else {
   res.status(400).json({
     status: 400,
-    result: `User with ID ${user+1} not found`,
+    result: `User with this ID is not found`,
   })
 }
-
 });
 
 

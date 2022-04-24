@@ -1,0 +1,12 @@
+POST /api/user HTTP/1.1
+Host: localhost:3000
+Content-Type: application/json
+
+{
+  "firstName": "thomas@gmail.com",
+  "lastName": "van Otterloo",
+  "street": "Lijndonk",
+  "city": "yescft",
+  "password": "123",
+  "emailAddress": "vanotterloo.thoasdmas@gmail.com2"
+}
