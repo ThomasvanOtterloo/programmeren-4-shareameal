@@ -8,7 +8,7 @@ let controller = {
         let user = req.body;
         let {firstName, lastName, street, city, password, emailAddress} = user;
         try {
-            assert(typeof firstName === 'string','Name must be a string')
+            assert(typeof firstName === 'string','firstName must be a string')
             assert(typeof lastName === 'string','Name must be a string')
             assert(typeof street === 'string','Name must be a string')
             assert(typeof city === 'string','Name must be a string')

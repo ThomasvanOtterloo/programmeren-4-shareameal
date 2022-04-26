@@ -23,7 +23,6 @@ app.use(userRouter);
 
 app.use((err,req,res,next) => {
   res.status(err.status).json(err)
-
 });
 
 
@@ -37,3 +36,5 @@ app.all("*", (req, res) => {
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
+
+module.exports = app;
