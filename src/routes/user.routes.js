@@ -24,7 +24,7 @@ userRouter.get("/api/user",(req,res)=> {
 userRouter.post('/api/user' , userController.validateUser ,userController.addUser);
 
 // Requests 1 user with a specific ID.
-userRouter.get('/api/user/:id', userController.getAllUsers);
+userRouter.get('/api/user/:id', userController.getUser);
 
 // Updates a user.
 userRouter.put("/api/user/:id",userController.updateUser);

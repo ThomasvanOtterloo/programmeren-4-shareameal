@@ -3,7 +3,7 @@ let id=0;
 const assert = require('assert');
 
 let controller = {
-    
+
     validateUser:(req,res,next)=>{
         let user = req.body;
         let {firstName, lastName, street, city, password, emailAddress} = user;
@@ -17,21 +17,22 @@ let controller = {
             next();
         }
         catch (err){
-            console.log(err)
-            res.status(400).json({
-                status:400,
-                result: err.toString()
-            })
+            const error = {
+                status: 400,
+                result: err.message,
+            }
+            next(error);
         }
     },
 
-    addUser: (req, res) => {
+    addUser: (req, res,next ) => {
         let user = req.body;
         if (userList.find(c => c.emailAddress === req.body.emailAddress)) {
-            res.status(400).json({
-                status: 400,
+            const error = {
+                status:404,
                 result: "A user with this email address already exists!"
-            });
+            }
+            next(error);
         } else {
             id++;
             user = {
@@ -47,7 +48,7 @@ let controller = {
         }
     },
 
-    getAllUsers: (req, res) => {
+    getUser: (req, res,next) => {
         let user = req.params.id;
         console.log(user)
         if (userList.find(c => c.id === parseInt(req.params.id))) {
@@ -57,14 +58,15 @@ let controller = {
             });
             console.log(user + " has been pulled")
         } else {
-            res.status(400).json({
+            const error = {
                 status: 400,
-                result: `User with ID ${user} not found`,
-            })
+                result: `User with ID ${user} not found`
+            }
+            next(error)
         }
     },
 
-    updateUser: (req,res) => {
+    updateUser: (req,res,next) => {
         if(userList.find(c => c.id === parseInt(req.params.id))) {
             console.log(req.params.id)
             let user = userList.find(c => c.id === parseInt(req.params.id));
@@ -80,14 +82,15 @@ let controller = {
                 res.status(200).json({status: 200, result: user});
             }
         } else {
-            res.status(400).json({
+            const error = {
                 status: 400,
                 result: `User with this ID not found`,
-            })
+            }
+            next(error);
         }
     },
 
-    deleteUser: (req,res) => {
+    deleteUser: (req,res,next) => {
         console.log(req.params)
         let user = userList.find(c => c.id === parseInt(req.params.id));
         if(user) {
@@ -97,10 +100,11 @@ let controller = {
                 result: 'Successfully deleted.'
             })
         } else {
-            res.status(400).json({
+            const error = {
                 status: 400,
                 result: `User with this ID is not found`,
-            })
+            }
+            next(error);
         }
     }
 };
