@@ -1,14 +1,19 @@
 const express = require("express");
 const app = express();
-const port = process.env.PORT || 3000;
+
+require('dotenv').config()
+const port = process.env.PORT;
 
 const userRouter = require('./src/routes/user.routes')
+
 
 const bodyParser = require("body-parser");
 app.use(bodyParser.json());
 
 // Link Heroku:
 // https://progragrameren-nodejs-server.herokuapp.com/
+// /Applications/XAMPP/xamppfiles/bin/mysql -u root
+// /Applications/XAMPP/xamppfiles/bin/mysql -h db-mysql-ams3-37313-do-user-2119860-0.b.db.ondigitalocean.com --port 25060 -u 2186082  -p
 
 app.all("*", (req, res, next) => {
   const method = req.method;

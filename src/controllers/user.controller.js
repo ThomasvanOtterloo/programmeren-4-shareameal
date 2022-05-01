@@ -1,6 +1,7 @@
 let userList = [];
 let id=0;
 const assert = require('assert');
+const dbConnection = require('../../database/dbconnection')
 
 let controller = {
 
@@ -46,6 +47,32 @@ let controller = {
             });
             console.log("Succesfully POST json sent.")
         }
+    },
+
+    getAll: (req,res,next) => {
+
+        dbConnection.getConnection(function(err, connection) {
+            if (err) throw err; // not connected!
+
+            // Use the connection
+            connection.query('SELECT id, name FROM meal', function (error, results, fields) {
+                // When done with the connection, release it.
+                connection.release();
+
+                // Handle error after the release.
+                if (error) throw error;
+
+                // Don't use the connection here, it has been returned to the pool.
+                console.log('#results = ', results.length)
+                res.status(200).json({
+                    status: 200,
+                    result: results
+                })
+                // pool.end((err)=> {
+                //     console.log('pool was closed.')
+                // });
+            });
+        });
     },
 
     getUser: (req, res,next) => {

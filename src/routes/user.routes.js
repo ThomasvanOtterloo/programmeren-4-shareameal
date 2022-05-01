@@ -12,13 +12,7 @@ userRouter.get("/", (req, res) => {
 });
 
 // Gets ALL User objects in the list.
-userRouter.get("/api/user",(req,res)=> {
-    res.status(200).json({
-        status:200,
-        result: userList
-    });
-    console.log("Get request /user is successfull");
-});
+userRouter.get("/api/user", userController.getAll);
 
 // Creates a object in USER
 userRouter.post('/api/user' , userController.validateUser ,userController.addUser);
