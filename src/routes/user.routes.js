@@ -15,15 +15,15 @@ userRouter.get("/", (req, res) => {
 userRouter.get("/api/user", userController.getAll);
 
 // Creates a object in USER
-userRouter.post('/api/user' , userController.validateUser ,userController.addUser);
+userRouter.post('/api/user' , userController.validateUser, userController.validateEmailaddress, userController.addUser);
 
 // Requests 1 user with a specific ID.
-userRouter.get('/api/user/:id', userController.getUser);
+userRouter.get('/api/user/:id',userController.validateID, userController.getUser);
 
 // Updates a user.
-userRouter.put("/api/user/:id",userController.updateUser);
+userRouter.put("/api/user/:id",userController.validateID, userController.validateEmailaddress, userController.updateUser);
 
 // deleted a user by id
-userRouter.delete('/api/user/:id', userController.deleteUser);
+userRouter.delete('/api/user/:id',userController.validateID, userController.deleteUser);
 
 module.exports = userRouter;

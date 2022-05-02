@@ -1,5 +1,4 @@
-let userList = [];
-let id=0;
+
 const assert = require('assert');
 const dbConnection = require('../../database/dbconnection')
 
@@ -10,11 +9,12 @@ let controller = {
         let {firstName, lastName, street, city, password, emailAddress} = user;
         try {
             assert(typeof firstName === 'string','firstName must be a string')
-            assert(typeof lastName === 'string','Name must be a string')
-            assert(typeof street === 'string','Name must be a string')
-            assert(typeof city === 'string','Name must be a string')
-            assert(typeof password === 'string','Name must be a string')
-            assert(typeof emailAddress === 'string','Name must be a string')
+            // assert(typeof lastName === 'string','Name must be a string')
+            // assert(typeof street === 'string','Name must be a string')
+            // assert(typeof city === 'string','Name must be a string')
+            // assert(typeof password === 'string','Name must be a string')
+            // assert(typeof emailAddress === 'string','Name must be a string')
+            console.log('validate user confirmed')
             next();
         }
         catch (err){
@@ -26,36 +26,69 @@ let controller = {
         }
     },
 
+    validateEmailaddress:(req,res,next)=>{
+        let email = req.body.emailAddress;
+        let id = req.params.id;
+        let query;
+        if (id === undefined) {
+            query = `SELECT * FROM user WHERE emailAdress = '${email}'`
+        } else {
+            query = `SELECT * FROM user WHERE emailAdress = '${email}' AND NOT id = ${id}`
+        }
+            dbConnection.getConnection(function (err, connection) {
+                if (err)
+                    return res.status(400).JSON({
+                        Status: 400,
+                        error: err
+                    })
+                // SELECT * FROM user WHERE emailAdress = 'h.tank@server.com' AND NOT id = 5;
+                connection.query(query, function (error,results,fields) {
+                    connection.release()
+                    console.log(results)
+                    if (results.length > 0) {
+                        console.log('duplication is triggered' , results.length)
+                        console.log(results)
+                        res.status(400).json({
+                            status:400,
+                            results: `Email ${email} already exists in the database, please choose a different email.`
+                        })
+                        console.log('validateEmailAddress confirmed')
+                    } else {
+                        console.log( 'Duplication not triggered > next to add user or update user')
+                        next()
+                    }
+                })
+            })
+    },
+
     addUser: (req, res,next ) => {
         let user = req.body;
-        if (userList.find(c => c.emailAddress === req.body.emailAddress)) {
-            const error = {
-                status:404,
-                result: "A user with this email address already exists!"
-            }
-            next(error);
-        } else {
-            id++;
-            user = {
-                id,
-                ...user,
-            };
-            userList.push(user);
-            res.status(201).json({
-                status: 201,
-                result: userList,
-            });
-            console.log("Succesfully POST json sent.")
-        }
+        let {firstName, lastName, isActive, emailAddress, password, phoneNumber, roles, street, city} = user;
+
+        dbConnection.getConnection(function (err, connection) {
+            if (err) throw err; // not connected!
+
+            connection.query(`INSERT INTO user (firstName, lastName, emailAdress, password,street,city) VALUES ('${firstName}', '${lastName}', '${emailAddress}', '${password}', '${street}', '${city}')`,function (error, results, fields) {
+            connection.query(`SELECT * FROM user WHERE emailAdress = '${emailAddress}'`, function (error, results, fields) {
+                console.log(results)
+                res.status(200).json({
+                    status: 200,
+                    result: results
+                })
+                if (error) throw error;
+            })
+                connection.release();
+                if (error) throw error;
+            })
+        })
     },
 
     getAll: (req,res,next) => {
-
         dbConnection.getConnection(function(err, connection) {
             if (err) throw err; // not connected!
 
             // Use the connection
-            connection.query('SELECT id, name FROM meal', function (error, results, fields) {
+            connection.query('SELECT * FROM user',function (error, results, fields) {
                 // When done with the connection, release it.
                 connection.release();
 
@@ -76,63 +109,144 @@ let controller = {
     },
 
     getUser: (req, res,next) => {
-        let user = req.params.id;
-        console.log(user)
-        if (userList.find(c => c.id === parseInt(req.params.id))) {
-            res.status(200).json({
-                status: 200,
-                result: userList.find(c => c.id === parseInt(req.params.id))
+        let id = req.params.id;
+        console.log(id)
+        dbConnection.getConnection(function(err, connection) {
+            if (err) throw err; // not connected!
+
+            // Use the connection
+            connection.query(`SELECT * FROM user WHERE id = ${parseInt(id)}`,function (error, results, fields) {
+                connection.release();
+
+                if (error) throw error;
+
+                res.status(200).json({
+                    status: 200,
+                    result: results
+                })
             });
-            console.log(user + " has been pulled")
-        } else {
-            const error = {
-                status: 400,
-                result: `User with ID ${user} not found`
-            }
-            next(error)
-        }
+        });
     },
 
     updateUser: (req,res,next) => {
-        if(userList.find(c => c.id === parseInt(req.params.id))) {
-            console.log(req.params.id)
-            let user = userList.find(c => c.id === parseInt(req.params.id));
-            if (user.emailAddress !== req.body.emailAddress && userList.find(c => c.emailAddress === req.body.emailAddress)) {
-                res.status(400).json({status: 401, result: "You updated your mail to a mail that allready exists!"})
-            } else {
-                user.firstName = req.body.firstName
-                user.lastName = req.body.lastName
-                user.street = req.body.street
-                user.city = req.body.city
-                user.password = req.body.password
-                user.emailAddress = req.body.emailAddress
-                res.status(200).json({status: 200, result: user});
-            }
+        let id = req.params.id;
+        let user = req.body;
+        let {firstName, lastName, isActive, emailAddress, password, phoneNumber, roles, street, city} = user;
+        let existingMail = false;
+
+        // Checks if the mail input is the same as the mail that's already in the database. If yes boolean is yes. if not it continues.
+        dbConnection.getConnection(function(err, connection) {
+            if (err) throw err; // not connected!
+
+            // Use the connection
+            connection.query(`SELECT * FROM user WHERE id = ${parseInt(id)} AND emailAdress = '${emailAddress}'`,function (error, results, fields) {
+                connection.release();
+                if (results.length === 1) {
+                    existingMail = true;
+                }
+                if (error) throw error;
+            });
+        });
+
+
+        if (existingMail === true) {
+            dbConnection.getConnection(function (err, connection) {
+                if (err) throw err; // not connected!
+
+                // Use the connection
+                connection.query(`UPDATE user SET firstName = '${firstName}',
+                                lastName = '${lastName}',
+                                isActive = ${parseInt(isActive)},
+                                password = '${password}',
+                                phoneNumber = '${phoneNumber}',
+                                roles = '${roles}', street = '${street}',
+                                city = '${city}' 
+                                WHERE id = ${id} ;`,
+                    function (error, results, fields) {
+                        connection.query(`SELECT * FROM user WHERE emailAdress = '${emailAddress}'`, function (error, results, fields) {
+                            console.log(results)
+                            res.status(200).json({
+                                status: 200,
+                                result: results
+                            })
+                            if (error) throw error;
+                        })
+                        connection.release();
+                        if (error) throw error;
+                    });
+            });
+
         } else {
-            const error = {
-                status: 400,
-                result: `User with this ID not found`,
-            }
-            next(error);
+            dbConnection.getConnection(function (err, connection) {
+                if (err) throw err; // not connected!
+
+
+                // Use the connection
+                connection.query(`UPDATE user SET firstName = '${firstName}',
+                                lastName = '${lastName}',
+                                isActive = ${parseInt(isActive)},
+                                emailAdress = '${emailAddress}',
+                                password = '${password}',
+                                phoneNumber = '${phoneNumber}',
+                                roles = '${roles}', street = '${street}',
+                                city = '${city}' 
+                                WHERE id = ${id} ;`,
+                    function (error, results, fields) {
+                        connection.query(`SELECT * FROM user WHERE emailAdress = '${emailAddress}'`, function (error, results, fields) {
+                            console.log(results)
+                            res.status(200).json({
+                                status: 200,
+                                result: results
+                            })
+                            if (error) throw error;
+                        })
+                        connection.release();
+                        if (error) throw error;
+                    });
+            });
         }
     },
 
     deleteUser: (req,res,next) => {
-        console.log(req.params)
-        let user = userList.find(c => c.id === parseInt(req.params.id));
-        if(user) {
-            userList.splice(userList.indexOf(user),1);
-            res.status(200).json({
-                status:200,
-                result: 'Successfully deleted.'
-            })
-        } else {
-            const error = {
-                status: 400,
-                result: `User with this ID is not found`,
-            }
-            next(error);
-        }
+        let id = req.params.id;
+        console.log(id)
+        dbConnection.getConnection(function(err, connection) {
+            if (err) throw err; // not connected!
+
+
+
+            // Use the connection
+            connection.query(`DELETE FROM user WHERE id = ${parseInt(id)}`,function (error, results, fields) {
+                connection.release();
+
+                if (error) throw error;
+
+                res.status(200).json({
+                    status: 200,
+                    result: `ID ${id} successfully deleted from the DATABASE`
+                })
+            });
+        });
+    },
+    validateID: (req, res,next)=> {
+        let id = req.params.id;
+        dbConnection.getConnection(function(err, connection) {
+            if (err) throw err; // not connected!
+
+            connection.query(`SELECT * FROM user WHERE id = ${parseInt(id)};`,function (error, results, fields) {
+                connection.release();
+                if (results.length === 1) {
+                    next()
+                } else {
+                    console.log(results);
+                    res.status(400).json({
+                        status:400,
+                        results: `ID ${id} Does not exist`
+                    })
+                }
+                if (error) throw error;
+            });
+        });
     }
 };
 
