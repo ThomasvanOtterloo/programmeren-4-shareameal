@@ -9,11 +9,12 @@ let controller = {
         let {firstName, lastName, street, city, password, emailAddress} = user;
         try {
             assert(typeof firstName === 'string','firstName must be a string')
-            // assert(typeof lastName === 'string','Name must be a string')
-            // assert(typeof street === 'string','Name must be a string')
-            // assert(typeof city === 'string','Name must be a string')
-            // assert(typeof password === 'string','Name must be a string')
-            // assert(typeof emailAddress === 'string','Name must be a string')
+            assert(typeof lastName === 'string','LastName must be a string')
+            assert(typeof emailAddress === 'string','EmailAddress must be a string')
+            assert(typeof password === 'string','Password must be a string')
+            assert(typeof street === 'string','Street must be a string')
+            assert(typeof city === 'string','City must be a string')
+
             console.log('validate user confirmed')
             next();
         }
@@ -41,7 +42,6 @@ let controller = {
                         Status: 400,
                         error: err
                     })
-                // SELECT * FROM user WHERE emailAdress = 'h.tank@server.com' AND NOT id = 5;
                 connection.query(query, function (error,results,fields) {
                     connection.release()
                     console.log(results)
@@ -50,7 +50,7 @@ let controller = {
                         console.log(results)
                         res.status(400).json({
                             status:400,
-                            results: `Email ${email} already exists in the database, please choose a different email.`
+                            result: `Email ${email} already exists in the database, please choose a different email.`
                         })
                         console.log('validateEmailAddress confirmed')
                     } else {
@@ -86,9 +86,27 @@ let controller = {
     getAll: (req,res,next) => {
         dbConnection.getConnection(function(err, connection) {
             if (err) throw err; // not connected!
+            // /api/user?lastName=Check
+            let firstName = req.query.firstName;
+            let lastName = req.query.lastName;
+            let isActive = req.query.isActive;
+            let showUsers = req.query.showUsers;
+            if (firstName !== undefined) {
+                query = `SELECT * FROM user WHERE firstName = '${firstName}'`
+                console.log(query, 'if')
+            } else if (lastName !== undefined) {
+                query = `SELECT * FROM user WHERE lastName = '${lastName}'`
+            } else if (isActive !== undefined) {
+                query = `SELECT * FROM user WHERE isActive = '${isActive}'`
+            } else if (showUsers !==undefined){
+                console.log(showUsers)
+                query = `SELECT * FROM user LIMIT ${parseInt(showUsers)};`
+            } else {
+                query = `SELECT * FROM user;`
+            }
 
             // Use the connection
-            connection.query('SELECT * FROM user',function (error, results, fields) {
+            connection.query(query,function (error, results, fields) {
                 // When done with the connection, release it.
                 connection.release();
 
@@ -101,9 +119,6 @@ let controller = {
                     status: 200,
                     result: results
                 })
-                // pool.end((err)=> {
-                //     console.log('pool was closed.')
-                // });
             });
         });
     },
@@ -241,7 +256,7 @@ let controller = {
                     console.log(results);
                     res.status(400).json({
                         status:400,
-                        results: `ID ${id} Does not exist`
+                        result: `ID ${id} Does not exist`
                     })
                 }
                 if (error) throw error;

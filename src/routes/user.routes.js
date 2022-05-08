@@ -21,7 +21,7 @@ userRouter.post('/api/user' , userController.validateUser, userController.valida
 userRouter.get('/api/user/:id',userController.validateID, userController.getUser);
 
 // Updates a user.
-userRouter.put("/api/user/:id",userController.validateID, userController.validateEmailaddress, userController.updateUser);
+userRouter.put("/api/user/:id",userController.validateID,userController.validateUser, userController.validateEmailaddress, userController.updateUser);
 
 // deleted a user by id
 userRouter.delete('/api/user/:id',userController.validateID, userController.deleteUser);
