@@ -80,12 +80,12 @@ describe('Manage Users ',()=> {
                         // firstName missing
                         // firstName: 'Thomas',
                         lastName: 'van Otterloo',
-                        emailAddress: 'vanOtterloo.thomas@gmail.com'
+                        emailAddress: 'uniqueee.thomas@gmail.com'
                     })
                     .end((err, res) => {
                         res.should.be.an('object')
                         let {status, result} = res.body;
-                        status.should.equals(400)
+                        status.should.equals(401)
                         result.should.be.a('string').that.equals('firstName must be a string')
 
                         done();
