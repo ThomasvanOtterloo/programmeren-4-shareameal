@@ -80,7 +80,7 @@ describe('Manage Users ',()=> {
                         // firstName missing
                         // firstName: 'Thomas',
                         lastName: 'van Otterloo',
-                        emailAddress: 'vanOtterloo.thomas@gmail.com'
+                        emailAddress: 'uniqueee.thomas@gmail.com'
                     })
                     .end((err, res) => {
                         res.should.be.an('object')
