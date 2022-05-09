@@ -63,10 +63,10 @@ describe('Manage Users ',()=> {
                         if (error) throw error
                         // Let op dat je done() pas aanroept als de query callback eindigt!
                         console.log('beforeEach done')
-                        done()
+
                     }
                 )
-
+                done()
 
             })
         })
