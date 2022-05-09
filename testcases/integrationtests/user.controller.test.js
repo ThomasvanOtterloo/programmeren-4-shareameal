@@ -77,8 +77,6 @@ describe('Manage Users ',()=> {
                     .request(server)
                     .post('/api/user')
                     .send({
-                        // firstName missing
-                        // firstName: 'Thomas',
                         lastName: 'van Otterloo',
                         emailAddress: 'uniqueee.thomas@gmail.com'
                     })
