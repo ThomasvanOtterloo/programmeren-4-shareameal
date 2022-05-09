@@ -85,7 +85,7 @@ describe('Manage Users ',()=> {
                     .end((err, res) => {
                         res.should.be.an('object')
                         let {status, result} = res.body;
-                        status.should.equals(401)
+                        status.should.equals(400)
                         result.should.be.a('string').that.equals('firstName must be a string')
 
                         done();
@@ -276,9 +276,9 @@ describe('Manage Users ',()=> {
                                 if (error) throw error
                                 // Let op dat je done() pas aanroept als de query callback eindigt!
                                 console.log('beforeEach Finished. Cleared database')
-                                done()
                             }
                         )
+                        done()
                     })
 
                 })
@@ -333,9 +333,10 @@ describe('Manage Users ',()=> {
                                 if (error) throw error
                                 // Let op dat je done() pas aanroept als de query callback eindigt!
                                 console.log('beforeEach done')
-                                done()
                             }
                         )
+                        done()
+
                     })
 
                 })
@@ -456,9 +457,10 @@ describe('Manage Users ',()=> {
                         if (error) throw error
                         // Let op dat je done() pas aanroept als de query callback eindigt!
                         console.log('beforeEach done')
-                        done()
                     }
                 )
+                done()
+
             })
 
         })
@@ -524,9 +526,9 @@ describe('Manage Users ',()=> {
                         if (error) throw error
                         // Let op dat je done() pas aanroept als de query callback eindigt!
                         console.log('beforeEach done')
-                        done()
                     }
                 )
+                done()
             })
 
         })
@@ -591,10 +593,9 @@ describe('Manage Users ',()=> {
                         if (error) throw error
                         // Let op dat je done() pas aanroept als de query callback eindigt!
                         console.log('beforeEach done')
-                        done()
                     }
                 )
-
+                done()
 
             })
 

@@ -20,7 +20,7 @@ let controller = {
         }
         catch (err){
             const error = {
-                status: 401,
+                status: 400,
                 result: err.message,
             }
             next(error);
