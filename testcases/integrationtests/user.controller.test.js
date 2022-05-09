@@ -91,9 +91,7 @@ describe('Manage Users ',()=> {
                     .request(server)
                     .post('/api/user')
                     .send({
-                        // firstName missing
                         firstName: 'Thomas',
-                        // lastName: 'van Otterloo',
                         emailAddress: 'vanOtterloo.thomas@gmail.com'
                     })
                     .end((err, res) => {
@@ -112,10 +110,8 @@ describe('Manage Users ',()=> {
                     .request(server)
                     .post('/api/user')
                     .send({
-                        // firstName missing
                         firstName: 'Thomas',
-                        lastName: 'van Otterloo',
-                        // emailAddress: 'vanOtterloo.thomas@gmail.com'
+                        lastName: 'van Otterloo'
                     })
                     .end((err, res) => {
                         res.should.be.an('object')
@@ -157,12 +153,10 @@ describe('Manage Users ',()=> {
                     .request(server)
                     .post('/api/user')
                     .send({
-                        // firstName missing
                         firstName: 'Thomas',
                         lastName: 'van Otterloo',
                         emailAddress: 'vanOtterloo.thomas@gmail.com',
                         password: 'secret',
-                        // street: 'Lijndonk',
                         city: 'Molenschot'
                     })
                     .end((err, res) => {
