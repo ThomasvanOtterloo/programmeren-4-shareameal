@@ -7,7 +7,7 @@ const userController = require('../controllers/user.controller')
 userRouter.get("/", (req, res) => {
     res.status(200).json({
         status: 200,
-        result: "Hello World",
+        result: "Hello World, This is Thomas van Otterloo haha! SN:2186082",
     });
 });
 

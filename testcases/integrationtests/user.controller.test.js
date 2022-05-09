@@ -33,7 +33,6 @@ describe('Manage Users ',()=> {
 
     describe('US-201 add user /api/user', () => {
         beforeEach((done) => {
-            console.log('beforeEach called')
             // maak de testdatabase leeg zodat we onze testen kunnen uitvoeren.
             dbconnection.getConnection(function (err, connection) {
                 if (err) throw err // not connected!
@@ -43,7 +42,6 @@ describe('Manage Users ',()=> {
                     CLEAR_DB,
                     function (error, results, fields) {
                         // When done with the connection, release it.
-                        console.log(CLEAR_DB, 'done')
                         connection.release()
 
                         // Handle error after the release.
@@ -56,14 +54,11 @@ describe('Manage Users ',()=> {
                         INSERT_USER,
                     function (error, results, fields) {
                         // When done with the connection, release it.
-                        console.log(INSERT_USER, 'done')
                         connection.release()
 
                         // Handle error after the release.
                         if (error) throw error
                         // Let op dat je done() pas aanroept als de query callback eindigt!
-                        console.log('beforeEach done')
-
                     }
                 )
                 done()
@@ -255,7 +250,6 @@ describe('Manage Users ',()=> {
 
             describe('TC-202-2 GET users empty database is needed. /api/user', () => {
                 beforeEach((done) => {
-                    console.log('beforeEach called of GET method')
                     // maak de testdatabase leeg zodat we onze testen kunnen uitvoeren.
                     dbconnection.getConnection(function (err, connection) {
                         if (err) throw err // not connected!
@@ -265,13 +259,11 @@ describe('Manage Users ',()=> {
                             CLEAR_DB,
                             function (error, results, fields) {
                                 // When done with the connection, release it.
-                                console.log(CLEAR_DB, 'done')
                                 connection.release()
 
                                 // Handle error after the release.
                                 if (error) throw error
                                 // Let op dat je done() pas aanroept als de query callback eindigt!
-                                console.log('beforeEach Finished. Cleared database')
                             }
                         )
                         done()
@@ -299,7 +291,6 @@ describe('Manage Users ',()=> {
 
             describe('TC-202-2 GET users filled database is needed. /api/user', () => {
                 beforeEach((done) => {
-                    console.log('beforeEach called')
                     // maak de testdatabase leeg zodat we onze testen kunnen uitvoeren.
                     dbconnection.getConnection(function (err, connection) {
                         if (err) throw err // not connected!
@@ -309,7 +300,6 @@ describe('Manage Users ',()=> {
                             CLEAR_DB,
                             function (error, results, fields) {
                                 // When done with the connection, release it.
-                                console.log(CLEAR_DB, 'done')
                                 connection.release()
 
                                 // Handle error after the release.
@@ -322,13 +312,11 @@ describe('Manage Users ',()=> {
                             INSERT_USER,
                             function (error, results, fields) {
                                 // When done with the connection, release it.
-                                console.log(INSERT_USER, 'done')
                                 connection.release()
 
                                 // Handle error after the release.
                                 if (error) throw error
                                 // Let op dat je done() pas aanroept als de query callback eindigt!
-                                console.log('beforeEach done')
                             }
                         )
                         done()
@@ -348,7 +336,6 @@ describe('Manage Users ',()=> {
                                 res.should.be.an('object')
                                 let {status, result} = res.body
                                 status.should.equals(200);
-                                //filled
                                 result.should.be.a('array').to.deep.equal(result)
                                 done()
                             })
@@ -410,7 +397,6 @@ describe('Manage Users ',()=> {
                                 res.should.be.an('object')
                                 let {status, result} = res.body
                                 status.should.equals(200);
-                                //filled
                                 result.should.be.a('array').to.deep.equal(result)
                                 done()
                             })
@@ -418,12 +404,10 @@ describe('Manage Users ',()=> {
             })
         })
 
-    //TC 204 moeten hier nog komen. GET BY ID en ID bestaan niet.
 
     describe('TC-205 GET user by ID /api/user/:id', () => {
         beforeEach((done) => {
 
-            console.log('beforeEach called')
             // maak de testdatabase leeg zodat we onze testen kunnen uitvoeren.
             dbconnection.getConnection(function (err, connection) {
                 if (err) throw err // not connected!
@@ -433,7 +417,6 @@ describe('Manage Users ',()=> {
                     CLEAR_DB,
                     function (error, results, fields) {
                         // When done with the connection, release it.
-                        console.log(CLEAR_DB, 'done')
                         connection.release()
 
                         // Handle error after the release.
@@ -446,13 +429,11 @@ describe('Manage Users ',()=> {
                     INSERT_USER,
                     function (error, results, fields) {
                         // When done with the connection, release it.
-                        console.log(INSERT_USER, 'done')
                         connection.release()
 
                         // Handle error after the release.
                         if (error) throw error
                         // Let op dat je done() pas aanroept als de query callback eindigt!
-                        console.log('beforeEach done')
                     }
                 )
                 done()
@@ -492,7 +473,6 @@ describe('Manage Users ',()=> {
     describe('TC-206 delete user /api/user/:id', () => {
         beforeEach((done) => {
 
-            console.log('beforeEach called')
             // maak de testdatabase leeg zodat we onze testen kunnen uitvoeren.
             dbconnection.getConnection(function (err, connection) {
                 if (err) throw err // not connected!
@@ -502,7 +482,6 @@ describe('Manage Users ',()=> {
                     CLEAR_DB,
                     function (error, results, fields) {
                         // When done with the connection, release it.
-                        console.log(CLEAR_DB, 'done')
                         connection.release()
 
                         // Handle error after the release.
@@ -515,13 +494,11 @@ describe('Manage Users ',()=> {
                     INSERT_USER,
                     function (error, results, fields) {
                         // When done with the connection, release it.
-                        console.log(INSERT_USER, 'done')
                         connection.release()
 
                         // Handle error after the release.
                         if (error) throw error
                         // Let op dat je done() pas aanroept als de query callback eindigt!
-                        console.log('beforeEach done')
                     }
                 )
                 done()
@@ -559,7 +536,6 @@ describe('Manage Users ',()=> {
     describe('TC-205 PUT users /api/user/:id', () => {
         beforeEach((done) => {
 
-            console.log('beforeEach called')
             // maak de testdatabase leeg zodat we onze testen kunnen uitvoeren.
             dbconnection.getConnection(function (err, connection) {
                 if (err) throw err // not connected!
@@ -569,7 +545,6 @@ describe('Manage Users ',()=> {
                     CLEAR_DB,
                     function (error, results, fields) {
                         // When done with the connection, release it.
-                        console.log(CLEAR_DB, 'done')
                         connection.release()
 
                         // Handle error after the release.
@@ -582,13 +557,11 @@ describe('Manage Users ',()=> {
                     INSERT_USER,
                     function (error, results, fields) {
                         // When done with the connection, release it.
-                        console.log(INSERT_USER, 'done')
                         connection.release()
 
                         // Handle error after the release.
                         if (error) throw error
                         // Let op dat je done() pas aanroept als de query callback eindigt!
-                        console.log('beforeEach done')
                     }
                 )
                 done()
