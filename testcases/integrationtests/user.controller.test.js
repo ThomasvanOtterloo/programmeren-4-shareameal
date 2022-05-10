@@ -2,7 +2,6 @@ process.env.DB_DATABASE = process.env.DB_DATABASE || '1234567'
 
 const chai = require('chai')
 const chaiHttp = require('chai-http')
-
 const server = require('../../index')
 const dbconnection = require('../../database/dbconnection')
 require('dotenv').config()
@@ -11,11 +10,6 @@ chai.should();
 chai.use(chaiHttp)
 
 
-/**
- * Db queries to clear and fill the test database before each test.
- */
-// const CLEAR_MEAL_TABLE = 'DELETE IGNORE FROM `meal`;'
-// const CLEAR_PARTICIPANTS_TABLE = 'DELETE IGNORE FROM `meal_participants_user`;'
 
 
 const CLEAR_USERS_TABLE = 'DELETE IGNORE FROM `user`;'
