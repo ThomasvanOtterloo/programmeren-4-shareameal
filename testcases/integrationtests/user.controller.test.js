@@ -10,17 +10,29 @@ chai.should();
 chai.use(chaiHttp)
 
 
-
-
-const CLEAR_USERS_TABLE = 'DELETE IGNORE FROM `user`;'
-const CLEAR_DB = CLEAR_USERS_TABLE
+const CLEAR_DB = 'DELETE IGNORE FROM `meal`; DELETE IGNORE FROM `meal_participants_user`; DELETE IGNORE FROM `user`;'
 
 const INSERT_USER =
-    'INSERT INTO user (id, firstName, lastName,isActive, emailAdress, password,street, city ) VALUES ' +
-    '(1, "first", "last", 1,"name@server.nl", "secret", "street", "city"),' +
-    '(2,"Mariëtte","van den Dullemen",0,"m.vandullemen@server.nl","secret","lijkdon","molenschot"),' +
-    '(3,"John","Doe",1,"j.doe@server.com","secret","lij","mo"),' +
-    '(4,"marieke","huizinga",0,"h.huizinga@server.nl","secret","qwerty","schotters");'
+    'INSERT INTO `user` (`id`, `firstName`, `lastName`, `emailAdress`, `password`, `street`, `city` ) VALUES' +
+    '(1, "first", "last", "name@server.nl", "secret", "street", "city"), (2, "thomas", "van Otterloo", "thomas@server.nl", "secret", "street", "city");'
+
+/**
+ * Query om twee meals toe te voegen. Let op de UserId, die moet matchen
+ * met de user die je ook toevoegt.
+ */
+const INSERT_MEALS =
+    'INSERT INTO `meal` (`id`, `name`, `description`, `imageUrl`, `dateTime`, `maxAmountOfParticipants`, `price`, `cookId`) VALUES' +
+    "(1, 'Meal A', 'description', 'image url', NOW(), 5, 6.50, 1)," +
+    "(2, 'Meal B', 'description', 'image url', NOW(), 5, 6.50, 1);"
+
+// const CLEAR_USERS_TABLE = 'DELETE IGNORE FROM `user`;'
+// const CLEAR_DB = CLEAR_USERS_TABLE
+// const INSERT_USER =
+//     'INSERT INTO user (id, firstName, lastName,isActive, emailAdress, password,street, city ) VALUES ' +
+//     '(1, "first", "last", 1,"name@server.nl", "secret", "street", "city"),' +
+//     '(2,"Mariëtte","van den Dullemen",0,"m.vandullemen@server.nl","secret","lijkdon","molenschot"),' +
+//     '(3,"John","Doe",1,"j.doe@server.com","secret","lij","mo"),' +
+//     '(4,"marieke","huizinga",0,"h.huizinga@server.nl","secret","qwerty","schotters");'
 
 describe('Manage Users ',()=> {
 
@@ -33,7 +45,7 @@ describe('Manage Users ',()=> {
 
                 // Use the connection
                 connection.query(
-                    CLEAR_DB,
+                    CLEAR_DB + INSERT_USER,
                     function (error, results, fields) {
                         // When done with the connection, release it.
                         connection.release()
@@ -41,21 +53,22 @@ describe('Manage Users ',()=> {
                         // Handle error after the release.
                         if (error) throw error
                         // Let op dat je done() pas aanroept als de query callback eindigt!
+                        done()
                     }
                 )
 
-                connection.query(
-                        INSERT_USER,
-                    function (error, results, fields) {
-                        // When done with the connection, release it.
-                        connection.release()
+                // connection.query(
+                //         INSERT_USER,
+                //     function (error, results, fields) {
+                //         // When done with the connection, release it.
+                //         connection.release()
+                //
+                //         // Handle error after the release.
+                //         if (error) throw error
+                //         // Let op dat je done() pas aanroept als de query callback eindigt!
+                //     }
+                // )
 
-                        // Handle error after the release.
-                        if (error) throw error
-                        // Let op dat je done() pas aanroept als de query callback eindigt!
-                    }
-                )
-                done()
 
             })
         })
@@ -193,7 +206,7 @@ describe('Manage Users ',()=> {
                         .send({
                             firstName: 'Thomas',
                             lastName: 'van Otterloo',
-                            emailAddress: 'm.vandullemen@server.nl',
+                            emailAddress: 'name@server.nl',
                             password: 'secret123',
                             street: 'lijndonk',
                             city: 'Molenschot'
@@ -202,7 +215,7 @@ describe('Manage Users ',()=> {
                             res.should.be.an('object')
                             let {status, result} = res.body
                             status.should.equals(400);
-                            result.should.be.a('string').that.equals(`Email m.vandullemen@server.nl already exists in the database, please choose a different email.`)
+                            result.should.be.a('string').that.equals(`Email name@server.nl already exists in the database, please choose a different email.`)
                             done()
                         })
                 })
@@ -285,7 +298,7 @@ describe('Manage Users ',()=> {
 
                         // Use the connection
                         connection.query(
-                            CLEAR_DB,
+                            CLEAR_DB + INSERT_USER,
                             function (error, results, fields) {
                                 // When done with the connection, release it.
                                 connection.release()
@@ -293,21 +306,22 @@ describe('Manage Users ',()=> {
                                 // Handle error after the release.
                                 if (error) throw error
                                 // Let op dat je done() pas aanroept als de query callback eindigt!
+                                done()
                             }
                         )
-
-                        connection.query(
-                            INSERT_USER,
-                            function (error, results, fields) {
-                                // When done with the connection, release it.
-                                connection.release()
-
-                                // Handle error after the release.
-                                if (error) throw error
-                                // Let op dat je done() pas aanroept als de query callback eindigt!
-                            }
-                        )
-                        done()
+                        //
+                        // connection.query(
+                        //     INSERT_USER,
+                        //     function (error, results, fields) {
+                        //         // When done with the connection, release it.
+                        //         connection.release()
+                        //
+                        //         // Handle error after the release.
+                        //         if (error) throw error
+                        //         // Let op dat je done() pas aanroept als de query callback eindigt!
+                        //     }
+                        // )
+                        // done()
 
                     })
 
@@ -380,12 +394,13 @@ describe('Manage Users ',()=> {
                     (done) => {
                         chai
                             .request(server)
-                            .get('/api/user?firstName=John')
+                            .get('/api/user?firstName=first')
                             .end((err, res) => {
                                 res.should.be.an('object')
                                 let {status, result} = res.body
                                 status.should.equals(200);
                                 result.should.be.a('array').to.deep.equal(result)
+                                console.log(result)
                                 done()
                             })
                     })
@@ -402,7 +417,7 @@ describe('Manage Users ',()=> {
 
                 // Use the connection
                 connection.query(
-                    CLEAR_DB,
+                    CLEAR_DB + INSERT_USER,
                     function (error, results, fields) {
                         // When done with the connection, release it.
                         connection.release()
@@ -410,21 +425,22 @@ describe('Manage Users ',()=> {
                         // Handle error after the release.
                         if (error) throw error
                         // Let op dat je done() pas aanroept als de query callback eindigt!
+                        done()
                     }
                 )
 
-                connection.query(
-                    INSERT_USER,
-                    function (error, results, fields) {
-                        // When done with the connection, release it.
-                        connection.release()
-
-                        // Handle error after the release.
-                        if (error) throw error
-                        // Let op dat je done() pas aanroept als de query callback eindigt!
-                    }
-                )
-                done()
+                // connection.query(
+                //     INSERT_USER,
+                //     function (error, results, fields) {
+                //         // When done with the connection, release it.
+                //         connection.release()
+                //
+                //         // Handle error after the release.
+                //         if (error) throw error
+                //         // Let op dat je done() pas aanroept als de query callback eindigt!
+                //     }
+                // )
+                // done()
 
             })
 
@@ -447,7 +463,7 @@ describe('Manage Users ',()=> {
         it.only('GET a user with a ID that does exist in the database, now a successfull response should be returned with the given user.',
             (done) => {
                 chai
-                    .request(server).get('/api/user/4').end((err, res) => {
+                    .request(server).get('/api/user/1').end((err, res) => {
                     res.should.be.an('object')
                     let {status, result} = res.body
                     status.should.equals(200);
@@ -467,7 +483,7 @@ describe('Manage Users ',()=> {
 
                 // Use the connection
                 connection.query(
-                    CLEAR_DB,
+                    CLEAR_DB + INSERT_USER,
                     function (error, results, fields) {
                         // When done with the connection, release it.
                         connection.release()
@@ -475,21 +491,22 @@ describe('Manage Users ',()=> {
                         // Handle error after the release.
                         if (error) throw error
                         // Let op dat je done() pas aanroept als de query callback eindigt!
+                        done()
                     }
                 )
 
-                connection.query(
-                    INSERT_USER,
-                    function (error, results, fields) {
-                        // When done with the connection, release it.
-                        connection.release()
-
-                        // Handle error after the release.
-                        if (error) throw error
-                        // Let op dat je done() pas aanroept als de query callback eindigt!
-                    }
-                )
-                done()
+                // connection.query(
+                //     INSERT_USER,
+                //     function (error, results, fields) {
+                //         // When done with the connection, release it.
+                //         connection.release()
+                //
+                //         // Handle error after the release.
+                //         if (error) throw error
+                //         // Let op dat je done() pas aanroept als de query callback eindigt!
+                //     }
+                // )
+                // done()
             })
 
         })
@@ -511,11 +528,11 @@ describe('Manage Users ',()=> {
         it.only('When deleting a existing user from the database. It returns a successful message with code 200',
             (done) => {
                 chai
-                    .request(server).delete('/api/user/4').end((err, res) => {
+                    .request(server).delete('/api/user/1').end((err, res) => {
                     res.should.be.an('object')
                     let {status, result} = res.body
                     status.should.equals(200);
-                    result.should.be.a('string').that.equals(`ID 4 successfully deleted from the DATABASE`)
+                    result.should.be.a('string').that.equals(`ID 1 successfully deleted from the DATABASE`)
                     done()
                 })
             })
@@ -530,7 +547,7 @@ describe('Manage Users ',()=> {
 
                 // Use the connection
                 connection.query(
-                    CLEAR_DB,
+                    CLEAR_DB + INSERT_USER,
                     function (error, results, fields) {
                         // When done with the connection, release it.
                         connection.release()
@@ -538,21 +555,22 @@ describe('Manage Users ',()=> {
                         // Handle error after the release.
                         if (error) throw error
                         // Let op dat je done() pas aanroept als de query callback eindigt!
+                        done()
                     }
                 )
 
-                connection.query(
-                    INSERT_USER,
-                    function (error, results, fields) {
-                        // When done with the connection, release it.
-                        connection.release()
-
-                        // Handle error after the release.
-                        if (error) throw error
-                        // Let op dat je done() pas aanroept als de query callback eindigt!
-                    }
-                )
-                done()
+                // connection.query(
+                //     INSERT_USER,
+                //     function (error, results, fields) {
+                //         // When done with the connection, release it.
+                //         connection.release()
+                //
+                //         // Handle error after the release.
+                //         if (error) throw error
+                //         // Let op dat je done() pas aanroept als de query callback eindigt!
+                //     }
+                // )
+                // done()
 
             })
 
@@ -565,7 +583,7 @@ describe('Manage Users ',()=> {
                     firstName: 'thomas',
                     lastName: 'van Otterloo',
                     isActive: 1,
-                    emailAddress: 'j.doe@server.com',
+                    emailAddress: 'thomas@server.nl',
                     password: '123',
                     phoneNumber: '-',
                     roles: 'editor,guest',
@@ -575,7 +593,7 @@ describe('Manage Users ',()=> {
                     res.should.be.an('object')
                     let {status, result} = res.body
                     status.should.equals(400);
-                    result.should.be.a('string').that.equals(`Email j.doe@server.com already exists in the database, please choose a different email.`)
+                    result.should.be.a('string').that.equals(`Email thomas@server.nl already exists in the database, please choose a different email.`)
                     done()
                 })
             })
@@ -700,7 +718,7 @@ describe('Manage Users ',()=> {
         it.only('When updating a user correctly, a successful result should be returned.',
             (done) => {
                 //1
-                chai.request(server).put('/api/user/3').send({
+                chai.request(server).put('/api/user/2').send({
                     firstName: 'ChangedThisRow',
                     lastName: 'Doe',
                     isActive: 1,
