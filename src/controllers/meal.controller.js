@@ -65,18 +65,23 @@ let controller = {
             if (err) throw err; // not connected!
 
 
-            let firstName = req.query.firstName;
-            let lastName = req.query.lastName;
+            let maxAmountOfParticipants = req.query.maxAmountOfParticipants;
+            let isVega = req.query.isVega;
             let isActive = req.query.isActive;
-            let showUsers = req.query.showUsers;
-            if (firstName !== undefined) {
-                query = `SELECT * FROM user WHERE firstName = '${firstName}'`
-            } else if (lastName !== undefined) {
-                query = `SELECT * FROM user WHERE lastName = '${lastName}'`
+            let showMeals = req.query.showMeals
+            if (maxAmountOfParticipants !== undefined && isActive !== undefined) {
+                query = `SELECT * FROM meal WHERE maxAmountOfParticipants = '${parseInt(maxAmountOfParticipants)}' AND isActive = ${parseInt(isActive)}`
+            } else if (showMeals !== undefined && isVega !== undefined) {
+                query = `SELECT * FROM meal WHERE isVega = '${parseInt(isVega)}' LIMIT ${parseInt(showMeals)}`
+                logger.debug(query)
+            } else if (maxAmountOfParticipants !== undefined) {
+                query = `SELECT * FROM meal WHERE maxAmountOfParticipants = '${parseInt(maxAmountOfParticipants)}'`
+            } else if (isVega !== undefined) {
+                query = `SELECT * FROM meal WHERE isActive = '${parseInt(isVega)}'`
             } else if (isActive !== undefined) {
-                query = `SELECT * FROM user WHERE isActive = '${isActive}'`
-            } else if (showUsers !==undefined){
-                query = `SELECT * FROM user LIMIT ${parseInt(showUsers)};`
+                query = `SELECT * FROM meal WHERE isActive = '${isActive}'`
+            } else if (showMeals !==undefined){
+                query = `SELECT * FROM meal LIMIT ${parseInt(showMeals)};`
             } else {
                 query = `SELECT * FROM meal;`
             }
