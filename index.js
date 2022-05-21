@@ -1,14 +1,18 @@
 const express = require("express");
 const app = express();
+const authRoutes = require('./src/routes/auth.routes')
+
 
 require('dotenv').config()
 const port = process.env.PORT;
 
 const userRouter = require('./src/routes/user.routes')
+const mealRouter = require('./src/routes/meal.routes')
 
 
 const bodyParser = require("body-parser");
 app.use(bodyParser.json());
+
 
 // Link Heroku:
 // https://progragrameren-nodejs-server.herokuapp.com/
@@ -26,8 +30,10 @@ app.all("*", (req, res, next) => {
 });
 
 
-
+app.use('/api', authRoutes)
 app.use(userRouter);
+app.use(mealRouter)
+
 
 
 app.use((err,req,res,next) => {
