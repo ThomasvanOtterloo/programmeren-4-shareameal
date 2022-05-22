@@ -1,10 +1,10 @@
 {
-  "name": "progragrameren-nodejs-server",
+  "name": "nodejs-server",
   "version": "0.0.1",
   "description": "Programmeren 4 SAM server",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
+    "start": "node index.js",
     "test": "mocha testcases/**/*.test.js --exit"
   },
   "author": "Robin",
