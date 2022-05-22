@@ -2,8 +2,6 @@
 const assert = require('assert');
 const dbConnection = require('../../database/dbconnection')
 const {logger} = require("../config/config");
-const {log} = require("nodemon/lib/utils");
-const jwt = require('jsonwebtoken')
 
 let controller = {
 
