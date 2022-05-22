@@ -4,7 +4,6 @@
   "description": "Programmeren 4 SAM server",
   "main": "index.js",
   "scripts": {
-    "test-local": "node index.js",
     "start": "nodemon index.js",
     "test": "mocha testcases/**/*.test.js --exit"
   },
